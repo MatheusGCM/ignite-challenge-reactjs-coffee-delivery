@@ -29,7 +29,8 @@ export function Checkout() {
     checkout,
   } = useCartContext()
 
-  const totalPrice = coffeeCart.length * 9.9
+  const totalPrice =
+    coffeeCart.reduce((acc, value) => acc + value.quantify, 0) * 9.9
   const totalPriceFormated = `R$ ${totalPrice.toFixed(2).toString().replace('.', ',')}`
   const totalPriceWithDelivery = totalPrice + 3.5
   const totalPriceWithDeliveryFormated = `R$ ${totalPriceWithDelivery.toFixed(2).toString().replace('.', ',')}`
@@ -64,13 +65,13 @@ export function Checkout() {
       <RightContainer>
         <TitleCheckout>Cafés selecionados</TitleCheckout>
         <OrderContainer>
-          {coffeeCart.map((item) => (
+          {coffeeCart.map((coffee) => (
             <SelectedCoffeeCard
-              key={item.id}
-              {...item}
-              onPressedAdd={() => handleAddCoffeeCart(item)}
-              onPressedSub={() => handleSubCoffeeCart(item)}
-              onPressedRemove={() => handleRemoveCoffeeCart(item.id)}
+              key={coffee.name}
+              {...coffee}
+              onPressedAdd={() => handleAddCoffeeCart(coffee)}
+              onPressedSub={() => handleSubCoffeeCart(coffee)}
+              onPressedRemove={() => handleRemoveCoffeeCart(coffee.name)}
             />
           ))}
 

@@ -11,6 +11,11 @@ import { Cart } from '../Cart'
 export function Header() {
   const { coffeeCart } = useCartContext()
 
+  const amountCoffee = coffeeCart.reduce(
+    (acc, currentValue) => acc + currentValue.quantify,
+    0,
+  )
+
   return (
     <HeaderContainer>
       <NavLink to={'/'}>
@@ -24,7 +29,7 @@ export function Header() {
         </LocaleContainer>
         <NavLink to="/checkout" title="cart">
           <Cart
-            amount={coffeeCart.length}
+            amount={amountCoffee}
             isDisabled={!coffeeCart.length}
             iconColor={defaultTheme['yellow-dark']}
             backgroundColor={defaultTheme['yellow-light']}
