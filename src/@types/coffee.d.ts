@@ -11,8 +11,5 @@ export interface CoffeeProps {
   description: string
   type: CoffeeType[]
   price: string
-}
-
-export interface CoffeeCart extends CoffeeProps {
-  id: string
+  quantify: number
 }

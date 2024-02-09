@@ -1,11 +1,25 @@
-import { ReactNode, createContext, useContext, useState } from 'react'
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { CoffeeCart, CoffeeProps } from 'src/@types/coffee'
+import { CoffeeProps } from 'src/@types/coffee'
 import { OrderProps } from 'src/@types/order'
+import {
+  addNewCoffeeAction,
+  clearCoffeeCartAction,
+  coffeeCartReducer,
+  removeCoffeeAction,
+  subCoffeeQuantifyAction,
+} from 'src/reducers/coffee-cart'
 
 interface CartContextProps {
-  coffeeCart: CoffeeCart[]
+  coffeeCart: CoffeeProps[]
   order: OrderProps
   addCoffeeCart(coffee: CoffeeProps): void
   subCoffeeCart(coffee: CoffeeProps): void
@@ -21,37 +35,52 @@ const CartContext = createContext({} as CartContextProps)
 
 const CartContextProvider = ({ children }: CartContextProviderProps) => {
   const navigate = useNavigate()
-  const [coffeeCart, setCoffeeCart] = useState<CoffeeCart[]>([])
+  const [coffeeCart, dispatch] = useReducer(
+    coffeeCartReducer,
+    [],
+    (initialState) => {
+      const storedStateAsJSON = localStorage.getItem(
+        '@coffee-delivery:coffee-cart',
+      )
+      if (storedStateAsJSON) {
+        return JSON.parse(storedStateAsJSON)
+      }
+      return initialState
+    },
+  )
   const [order, setOrder] = useState({} as OrderProps)
 
   const addCoffeeCart = (coffee: CoffeeProps) => {
-    const id = String(new Date().getTime())
-    setCoffeeCart((state) => [...state, { ...coffee, id }])
+    dispatch(addNewCoffeeAction(coffee))
   }
 
   const subCoffeeCart = (coffee: CoffeeProps) => {
-    if (coffeeCart.length) {
-      const index = coffeeCart.findIndex((item) => item.name === coffee.name)
-      if (index !== -1) {
-        const newCoffeeCart = [
-          ...coffeeCart.slice(0, index),
-          ...coffeeCart.slice(index + 1),
-        ]
-        setCoffeeCart(newCoffeeCart)
+    const coffeeFound = coffeeCart.find((item) => item.name === coffee.name)
+    if (coffeeFound) {
+      if (coffeeFound.quantify > 1) {
+        dispatch(subCoffeeQuantifyAction(coffee))
+      } else {
+        const { name } = coffee
+        dispatch(removeCoffeeAction(name))
       }
     }
   }
 
-  const removeCoffeeCart = (id: string) => {
-    const newCoffeeCart = coffeeCart.filter((item) => item.id !== id)
-    setCoffeeCart(newCoffeeCart)
+  const removeCoffeeCart = (name: string) => {
+    dispatch(removeCoffeeAction(name))
   }
 
   const checkout = (data: OrderProps) => {
     setOrder(data)
     navigate('/success')
-    setCoffeeCart({} as CoffeeCart[])
+    dispatch(clearCoffeeCartAction())
   }
+
+  useEffect(() => {
+    const stateJSON = JSON.stringify(coffeeCart)
+
+    localStorage.setItem('@coffee-delivery:coffee-cart', stateJSON)
+  }, [coffeeCart])
 
   return (
     <CartContext.Provider

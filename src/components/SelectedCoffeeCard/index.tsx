@@ -15,6 +15,7 @@ interface SelectedCoffeeCardProps {
   imgSrc: string
   name: string
   price: string
+  quantify: number
   onPressedAdd(): void
   onPressedSub(): void
   onPressedRemove(): void
@@ -24,6 +25,7 @@ export function SelectedCoffeeCard({
   imgSrc,
   name,
   price,
+  quantify,
   onPressedAdd,
   onPressedSub,
   onPressedRemove,
@@ -36,6 +38,7 @@ export function SelectedCoffeeCard({
           <h4>{name}</h4>
           <ButtonsContainer>
             <InputNumber
+              value={quantify}
               height={2}
               onPressedAdd={onPressedAdd}
               onPressedSub={onPressedSub}
