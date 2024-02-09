@@ -4,7 +4,7 @@ export const HomeContainer = styled.main``
 
 export const HomeContainerMid = styled.section`
   display: flex;
-  margin: 6rem 0 8.75rem;
+  margin: 7rem 0 8.75rem;
   @media (max-width: 1130px) {
     img {
       display: none;

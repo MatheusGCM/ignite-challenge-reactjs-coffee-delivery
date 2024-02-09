@@ -7,7 +7,12 @@ export const BaseContainer = styled.div`
 
 export const HeaderContainer = styled(BaseContainer)`
   justify-content: space-between;
+  position: fixed;
+  width: 70rem;
+  z-index: 10;
   /* border: 1px solid red; */
+  background-color: ${({ theme }) => theme.background};
+  padding: 2rem 0 0;
 `
 export const NavContainer = styled.nav`
   display: flex;

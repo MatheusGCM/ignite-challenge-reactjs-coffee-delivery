@@ -13,7 +13,6 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    padding-top: 2rem;
     display: flex;
     justify-content: center;
     height: 100vh;
